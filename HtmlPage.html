@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="LineClass.js"></script>
+    <script src="PointClass.js"></script>
+    <script src="IndicatorClass.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <canvas id="canvas" width="600" height="600" style="border:dashed"></canvas>
+    <script>
+            Math
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
+            var current = null;
+            var Points = [];
+            var Lines = [];
+            var _X_, _Y_;
+            var MyLine;
+            var newX, newY;
+            var VirtualPoint = new Indicator();
+            var VirtualPoint2 = new Point();
+            var AddPoint = false;
+            var ShowVirtualPoint = false;
+            var ShowVirtualPoint2 = false;
+            var PointsIndex = 2;
+            var LinesIndex = 0;
+            
+
+            Points[0] = new Point(-11,450);
+            Points[1] = new Point(611, 450);
+        
+            Lines[LinesIndex] = new Line(Points[0], Points[1]);
+            LinesIndex++;
+
+
+            function init(ctx) {
+                ///<param name="ctx" type="CanvasRenderingContext2D"/>
+                canvas.width = canvas.width;
+            }
+
+            (function Update() {
+
+                    requestAnimationFrame(Update);
+
+                    init(ctx);
+
+                    if (ShowVirtualPoint) {
+
+                        VirtualPoint.Draw(ctx);
+                    }
+
+                    if (ShowVirtualPoint2){
+
+                        VirtualPoint2.Draw(ctx);
+                    }
+
+                    for (var i = 0; i < Points.length; i++) {
+                        Points[i].Draw(ctx);
+                    }
+
+                    for (var i = 0; i < Lines.length; i++) {
+                        Lines[i].Draw(ctx);
+                    }
+
+                })();
+
+            canvas.onmousedown = function (e) {
+
+                    for (var i = 0; i < Points.length; i++) {
+
+                        if (Points[i].IsMouseOver(e.offsetX, e.offsetY)) {
+
+                            current = Points[i];
+                        }
+                    }
+
+                    if (AddPoint) {
+
+                        ShowVirtualPoint = false;
+
+                        Points[PointsIndex] = new Point(_X_, _Y_);
+                        PointsIndex++;
+
+                        var x1 = Lines[MyLine].Left_Point.x;
+                        var y1 = Lines[MyLine].Left_Point.y;
+                        var x2 = Lines[MyLine].Right_Point.x;
+                        var y2 = Lines[MyLine].Right_Point.y;
+
+
+                        var distance2 = (Math.abs(((y2 - y1) - (x2 - x1) + (x2 * y1) - (x1 * y2)))) / (Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2)))
+
+                        lefttemp = Lines[MyLine].Left_Point;
+                        righttemp = Lines[MyLine].Right_Point;
+
+                        Lines[MyLine].Right_Point = Points[PointsIndex - 1];
+
+                        Lines[LinesIndex] = new Line(Points[PointsIndex - 1], righttemp);
+                        LinesIndex++;
+
+                        return Lines[MyLine + 1];
+
+                    }
+            }
+            canvas.onmouseup = function () {
+
+                current = null;
+            }
+            canvas.onmousemove = function (e) {
+
+                _X_ = e.offsetX;
+                _Y_ = e.offsetY;
+
+                if (current != null) {
+
+                    current.x = e.offsetX;
+                    current.y = e.offsetY;
+                }
+
+            }
+
+            onkeydown = function (e) {
+                
+                switch (e.key) {
+
+                    case 'i':
+                        {
+                            //if (AddPoint) {
+
+                            //    ShowVirtualPoint = false;
+                                
+                            //    Points[PointsIndex] = new Point(_X_, _Y_);
+                            //    PointsIndex++;
+
+                            //    var x1 = Lines[MyLine].Left_Point.x;
+                            //    var y1 = Lines[MyLine].Left_Point.y;
+                            //    var x2 = Lines[MyLine].Right_Point.x;
+                            //    var y2 = Lines[MyLine].Right_Point.y;
+                                
+
+                            //    var distance2 = (Math.abs(((y2 - y1) - (x2 - x1) + (x2 * y1) - (x1 * y2)))) / (Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2)))
+
+                            //    lefttemp = Lines[MyLine].Left_Point;
+                            //    righttemp = Lines[MyLine].Right_Point;
+
+                            //    Lines[MyLine].Right_Point = Points[PointsIndex - 1];
+
+                            //    Lines[LinesIndex] = new Line(Points[PointsIndex - 1], righttemp);
+                            //    LinesIndex++;
+
+                            //    return Lines[MyLine + 1];
+
+                            //}
+                        }
+                        break;
+
+                    case 'p':
+                        {
+                            ShowVirtualPoint = true;
+                            ShowVirtualPoint2 = true;
+                            AddPoint = true;
+                            VirtualPoint2.x = _X_;
+                            VirtualPoint2.y = _Y_;
+
+                            var ArrayNearest = [];
+                            var IndexNearest = 0;
+                            var MinimumDistance = 900;
+
+
+
+                            for (var i = 0; i < Lines.length; i++) {
+
+                                if (Lines[i].Left_Point.x < Lines[i].Right_Point.x) {
+
+                                    if (Lines[i].Left_Point.x < _X_ && Lines[i].Right_Point.x > _X_) {
+
+                                        ArrayNearest[IndexNearest] = i;
+                                        IndexNearest++;
+                                    }
+
+                                }
+
+                                else {
+
+                                    if (Lines[i].Right_Point.x < _X_ && Lines[i].Left_Point.x > _X_) {
+
+                                        ArrayNearest[IndexNearest] = i;
+                                        IndexNearest++;
+                                    }
+
+                                }
+
+                            }
+
+
+                            for (var i = 0; i < ArrayNearest.length; i++) {
+
+                                var x1 = Lines[ArrayNearest[i]].Left_Point.x;
+                                var y1 = Lines[ArrayNearest[i]].Left_Point.y;
+                                var x2 = Lines[ArrayNearest[i]].Right_Point.x;
+                                var y2 = Lines[ArrayNearest[i]].Right_Point.y;
+
+                                var distance = (Math.abs((((y2 - y1) * _X_) - ((x2 - x1) * _Y_) + (x2 * y1) - (x1 * y2)))) / (Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2)))
+
+                                if (distance < MinimumDistance) {
+
+                                    MinimumDistance = distance;
+                                    MyLine = ArrayNearest[i];
+                                }
+
+                            }
+
+                            var x1 = Lines[MyLine].Left_Point.x;
+                            var y1 = Lines[MyLine].Left_Point.y;
+                            var x2 = Lines[MyLine].Right_Point.x;
+                            var y2 = Lines[MyLine].Right_Point.y;
+                            var m1 = ((y1 - y2) / (x1 - x2));
+                            var m2 = -1 / m1;
+                            var c1 = y1 - m1 * x1;
+                            var c2 = _Y_ - m2 * _X_;
+
+
+                            Onlinex = (c2 - c1) / (m1 - m2);
+                            Onliney = m2 * Onlinex + c2;
+
+
+                            if (Lines.length == 1) {
+
+                                VirtualPoint = new Indicator(_X_, 450);
+
+                            }
+
+                            else {
+                                if (Lines[MyLine].Left_Point.x - Lines[MyLine].Right_Point.x > 0) {
+
+                                    if (Onlinex < Lines[MyLine].Left_Point.x && Onlinex > Lines[MyLine].Right_Point.x) {
+
+
+                                        VirtualPoint = new Indicator(Onlinex, Onliney);
+                                    }
+                                }
+                                else {
+
+                                    if (Onlinex > Lines[MyLine].Left_Point.x && Onlinex < Lines[MyLine].Right_Point.x) {
+
+
+                                        VirtualPoint = new Indicator(Onlinex, Onliney);
+                                    }
+                                        
+                                }
+                            }
+
+                        }
+                        break;
+                }
+            }
+            onkeyup = function (e) {
+
+                switch (e.key) {
+
+                    case 'p':
+                        {
+                            
+                            ShowVirtualPoint = false;
+                            ShowVirtualPoint2 = false;
+                        }
+                        break;
+                }
+            }
+
+    </script>
+</body>
+</html>

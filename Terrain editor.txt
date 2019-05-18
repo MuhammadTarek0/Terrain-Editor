@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+
+    </head>
+    <body>
+        <canvas id="canvas"width="600" height="600" style="border:dashed"></canvas>
+        <script>
+            Math
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
+            var points = [];
+            var liness = [];
+            var xxx = 450;
+            var yyy = 0;
+            var pi =0;
+            var li = 0;
+            var pointtemp;
+            var pointtemp2;
+
+
+           
+
+
+            points[pi] = new Point(0,400);
+            pi++;
+            points[pi] = new Point(600, 400);  
+            pi++;
+
+
+            //points[pi] = new Point(200,400);
+            //pi++;
+            //points[pi] = new Point(300, 400);
+            //pi++;
+
+            //AddP();
+            //console.log(points[4].x);
+            //console.log(points[4].x);
+            //points[pi] = new Point(400,400);
+            //pi++;
+            //points[pi] = new Point(500, 400);
+            //pi++;
+            //points[pi] = new Point(600, 400);
+            //pi++;
+
+            liness [li] = new linee(points[0],points[1]);
+            li++;
+
+            //liness [li];
+            //liness [li] = new linee(points[1],points[2]);
+            //li++;
+            //liness [li] = new linee(points[2],points[3]);
+            //li++;
+            //liness [li] = new linee(points[3],points[4]);
+            //li++;
+            //liness [li] = new linee(points[4],points[5]);
+            //li++;
+            //liness [li] = new linee(points[5],points[6]);
+            //li++;
+            //console.log(liness[2].pleft.x);
+            //console.log(liness[2].pright.x);
+
+
+            function init(ctx) {
+                ///<param name="ctx" type="CanvasRenderingContext2D"/>
+                canvas.width = canvas.width;
+            }
+
+            (function Update() {
+                requestAnimationFrame(Update);
+                init(ctx);
+                for (var i = 0; i < points.length; i++) {
+                    points[i].Draw(ctx);
+                }
+                //liness[0].Draw(ctx);
+                //console.log("oldpright="+liness[0].pright.x);
+                //liness[1].Draw(ctx);
+                for (var i = 0; i < liness.length; i++) {
+                    liness[i].Draw(ctx);
+                }
+
+
+
+            })();
+            var current = null;
+            canvas.onmousedown = function (e) {
+                for (var i = 0; i < points.length; i++) {
+                    if (points[i].IsMouseOver(e.offsetX, e.offsetY)) {
+                        current = points[i];;
+                    }
+                }
+            }
+            canvas.onmouseup = function () {
+                current = null;
+            }
+            canvas.onmousemove = function (e) {
+                xxx = e.offsetX;
+                yyy =e.offsetY;
+
+                console.log("x="+xxx);
+                console.log("y="+yyy);
+                if (current != null) {
+                    current.x = e.offsetX;
+                    current.y = e.offsetY;
+                }
+            }
+
+
+
+            onkeydown = function (e) {
+                console.log(e.key);
+                switch (e.key) {
+                    case 'p':
+                        {
+                            var linetemp;
+                            var lefttemp;
+                            var righttemp;
+                            var linec;
+                            var rdic = [];
+                            var rdicc = 0;
+                            var dis =99999;
+
+
+                            //debugger;
+                            for (var i = 0; i < liness.length; i++) {
+                                if (liness[i].pleft.x<liness[i].pright.x)
+                                {
+                                    if (liness[i].pleft.x<xxx&&liness[i].pright.x>xxx)
+                                    {
+                                        rdic[rdicc] = i;
+                                        rdicc = rdicc+1;
+
+                                        //final
+
+
+                                    } 
+
+                                }
+                                else
+                                {
+                                    if (liness[i].pright.x<xxx&&liness[i].pleft.x>xxx)
+                                    {
+                                        rdic[rdicc] = i;
+                                        rdicc = rdicc+1;
+
+                                        //final
+
+
+                                    } 
+
+                                }
+
+                            }
+                            console.log(rdic.length);
+
+                            for (var i = 0; i < rdic.length; i++) 
+                            {
+                                var x1 =liness[rdic[i]].pleft.x
+                                var y1 =    liness[rdic[i]].pleft.y
+                                var x2 =    liness[rdic[i]].pright.x
+                                var y2 =    liness[rdic[i]].pright.y
+                                //calcualte distance between xxx,yyy and  liness[rdic[i]]
+                                //var distance = math.abs(( (y2 -y1)-(x2-x1)+(x2*y1)-(x1*y2) ))/(Math.sqrt(math.pow((y2-y1),2)+math.pow((x2-x1),2)))
+                                var distance =( Math.abs(( ((y2 -y1)*xxx)-((x2-x1)*yyy)+(x2*y1)-(x1*y2) )))/(Math.sqrt(Math.pow((y2-y1),2)+Math.pow((x2-x1),2)))
+                                console.log(i+"=="+distance);
+                                //if distance > dis then linec = rdic[i]
+                                if (distance<dis)
+                                {
+
+                                    dis = distance ; 
+                                    linec = rdic[i] ;
+                                }
+
+                            }
+                            ////////////////////////////////////////////////////////////
+                            var x1 =liness[linec].pleft.x
+                            var y1 =    liness[linec].pleft.y
+                            var x2 =    liness[linec].pright.x
+                            var y2 =    liness[linec].pright.y
+                            //calcualte distance between xxx,yyy and  liness[rdic[i]]
+                            //var distance = math.abs(( (y2 -y1)-(x2-x1)+(x2*y1)-(x1*y2) ))/(Math.sqrt(math.pow((y2-y1),2)+math.pow((x2-x1),2)))
+                            var distance2 =( Math.abs(( (y2 -y1)-(x2-x1)+(x2*y1)-(x1*y2) )))/(Math.sqrt(Math.pow((y2-y1),2)+Math.pow((x2-x1),2)))
+                            console.log("final dis"+dis);
+                            console.log("actual dis"+distance2);
+                            ///////////////////////////////////////////////////////////////////
+
+                            lefttemp =  liness[linec].pleft;
+                            righttemp =  liness[linec].pright;
+
+                            liness[linec].pright = points[pi-1];
+
+                            liness[li] = new linee(points[pi-1],righttemp);
+                            li++;
+
+
+
+
+                            return liness[linec+1];
+
+
+
+
+                        }
+                        break;
+                    case 'm':
+                        {
+                            points[pi] = new Point(xxx,yyy);
+                            pi++;
+
+
+
+
+
+                        }
+                        break;
+
+
+                }
+
+
+            }
+
+
+
+            function AddP()
+            {
+                var that=this;
+
+
+                that.points[pi] = new Point(xxx,400);
+                pi++;
+                return points[pi];
+
+
+            }
+
+            function Point(x,y) {
+                this.x = x;
+                this.y = y;
+                var hamada = 3;
+                var that=this;
+                this.Draw=function(ctx){
+                    ///<param name="ctx" type="CanvasRenderingContext2D"/>
+                    ctx.beginPath()
+                    ctx.arc(that.x, that.y, 10, 0, 3.14159268 * 2);
+                    ctx.fill();
+                    ctx.closePath();
+                }
+
+                this.IsMouseOver = function (x, y) {
+                    var dy = y - that.y;
+                    var dx = x - that.x;
+                    var d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 10) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
+            function linee( pleft, pright) {
+                this.pleft = pleft;
+                this.pright = pright;
+
+                var that=this;
+                this.Draw=function(ctx){
+                    ///<param name="ctx" type="CanvasRenderingContext2D"/>
+                    ctx.beginPath();
+                    ctx.moveTo(that.pleft.x, that.pleft.y);
+                    ctx.lineTo( that.pright.x, that.pright.y);
+                    ctx.stroke();
+                    ctx.closePath();
+
+                }
+
+
+            }
+
+
+
+        </script>
+    </body>
+</html>
+****************************************************************************************************************************************************************************************************************************************************************************************************************************************
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="PointClass.js"></script>
+    <title></title>
+</head>
+<body>
+    <canvas id="canvas" width="700" height="600" style="border:dashed"></canvas>
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var height = canvas.height;
+        var width = canvas.width;
+        var points = [];
+        var lines = [];
+        var x = 3;
+        var m1, m2, c1, c2, Onlinex, Onliney, r;
+        var newX, newY, theta;
+        points[0] = new Point(-10, 18);
+        points[1] = new Point(800, 611);
+        points[2] = new Point(500, 200);
+        points[3] = new Point();
+        var current = null;
+        var IsFound = false;
+        var Add = false;
+        var index;
+
+        function Init(ctx)
+        {
+            
+            canvas.width = canvas.width;
+            
+        }
+
+        (function Update() {
+            requestAnimationFrame(Update);
+            Init(ctx);
+            ctx.beginPath()
+            ctx.moveTo(points[1].x, points[1].y);
+            ctx.lineTo(points[0].x, points[0].y);
+            ctx.lineWidth = 5;
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+
+            for (var i = 0; i < points.length; i++) {
+                points[i].Draw(ctx);
+            }
+        })();
+
+
+        onkeydown = function (e) {
+            switch (e.key) {
+                case '+':
+                    {
+                        
+                    }
+                    break;
+                case '-':
+                    {
+                        
+                    }
+                    break;
+
+                case 'p':
+                    {
+                        Add = true;
+                    }
+                    break;
+
+                case 'd':
+                    {
+                        
+                    }
+                    break;
+            }
+        }
+        onkeyup = function (e) {
+            switch (e.key) {
+                case '+':
+                    {
+                        
+                    }
+                    break;
+                case '-':
+                    {
+                        
+                    }
+                    break;
+
+                case 'p':
+                    {
+                        Add = false;
+                        
+                    }
+                    break;
+
+                case 'd':
+                    {
+                        
+                    }
+                    break;
+            }
+        }        
+        canvas.onmousedown = function (e) {
+
+            for (var i = 1; i < points.length; i++) {
+
+                if (points[i].IsMouseOver(e.offsetX, e.offsetY)) {
+                    current = points[i];
+
+                }
+            }
+
+            {
+                m1 = ((points[1].y - points[0].y) / (points[1].x - points[0].x));
+
+                m2 = -1 / m1;
+
+                c1 = points[1].y - m1 * points[1].x;
+
+                c2 = current.y - m2 * current.x;
+
+                Onlinex = (c2 - c1) / (m1 - m2);
+
+                Onliney = m2 * Onlinex + c2;
+
+                if (Add != false) {
+
+                    if (points[0].y == points[1].y) {
+                        Onlinex = current.x;
+                        Onliney = points[0].y;
+                    }
+                    else if (points[0].x == points[1].x) {
+
+                        Onliney = current.y;
+                        Onlinex = points[0].x;
+
+                    }
+                    else {
+                        var X_ = Onlinex - current.x;
+                        var Y_ = Onliney - current.y;
+                    }
+
+
+                    r = Math.sqrt((X_ * X_) + (Y_ * Y_));
+                    var angle = Math.atan(m2);
+
+
+                    newX = Onlinex + r * Math.cos(angle);
+
+                    newY = Onliney + r * Math.sin(angle);
+
+                    console.log(Onlinex);
+                    console.log(Onliney);
+                    points[3].x = Onlinex;
+                    points[3].y = Onliney;
+                }
+
+            }
+
+        }
+        canvas.onmouseup = function () {
+            current = null;
+        }
+        canvas.onmousemove = function (e) {
+
+            if (current != null) {
+
+                current.x = e.offsetX;
+                current.y = e.offsetY;
+
+                    m1 = ((points[1].y - points[0].y) / (points[1].x - points[0].x));
+                    
+                    m2 = -1 / m1;
+
+                    c1 = points[1].y - m1 * points[1].x;
+
+                    c2 = current.y - m2 * current.x;
+
+                    Onlinex = (c2 - c1) / (m1 - m2);
+
+                    Onliney = m2 * Onlinex + c2;
+
+                    if (Add != false) {
+
+                        if (points[0].y == points[1].y) {
+                            Onlinex = current.x;
+                            Onliney = points[0].y;
+                        }
+                        else if (points[0].x == points[1].x) {
+
+                            Onliney = current.y;
+                            Onlinex = points[0].x;
+
+                        }
+                        else {
+                            var X_ = Onlinex - current.x;
+                            var Y_ = Onliney - current.y;
+                        }
+
+
+                        r = Math.sqrt((X_ * X_) + (Y_ * Y_));
+                        var angle = Math.atan(m2);
+
+
+                        newX = Onlinex + r * Math.cos(angle);
+
+                        newY = Onliney + r * Math.sin(angle);
+
+                        console.log(Onlinex);
+                        console.log(Onliney);
+                        points[3].x = Onlinex;
+                        points[3].y = Onliney;
+                    }
+
+            }
+        }
+
+
+    </script>
+
+</body>
+</html>
